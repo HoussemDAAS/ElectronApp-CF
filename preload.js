@@ -1,11 +1,5 @@
-/**
- * The preload script runs before `index.html` is loaded
- * in the renderer. It has access to web APIs as well as
- * Electron's renderer process modules and some polyfilled
- * Node.js functions.
- *
- * https://www.electronjs.org/docs/latest/tutorial/sandbox
- */
+const { contextBridge, ipcRenderer } = require('electron')
+const os=require('os');
 window.addEventListener('DOMContentLoaded', () => {
   const replaceText = (selector, text) => {
     const element = document.getElementById(selector)
@@ -16,3 +10,8 @@ window.addEventListener('DOMContentLoaded', () => {
     replaceText(`${type}-version`, process.versions[type])
   }
 })
+contextBridge.exposeInMainWorld('electron', {
+  homedir: () => os.homedir(),
+  osVersion: () => os.version(),
+  architecture: () => os.arch(),
+});
